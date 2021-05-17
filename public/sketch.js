@@ -44,7 +44,7 @@ function draw(){
   
   //console.log(historyTweets.length);
   
-  if (historyTweets && historyTweets.length > 0 && historyTweetsToggle == false){
+  if (historyTweets && historyTweets.length > 0 && historyTweetsToggle == false && historyTweets.search("https://") == -1){
     console.log("here!");
     console.log(historyTweets);
     textSize(fontSize);
