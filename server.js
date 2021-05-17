@@ -3,6 +3,7 @@
 
 const needle = require('needle');
 const express = require("express");
+const path = require('path');
 const http = require("http");
 const socketIo = require("socket.io");
 
@@ -34,7 +35,7 @@ const rules = [{
     },
 ];
 
-app.use(express.static('public'));
+//app.use(express.static('public'));
 /*
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');    //waht exactly is sendfile?
@@ -189,7 +190,16 @@ async function getRequest(socket) {
     }
 }
 
+console.log("NODE_ENV is", process.env.NODE_ENV);
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../Twitter Against Lonesome/public")));    
+  app.get("*", (request, res) => {
+    res.sendFile(path.join(__dirname, "../Twitter Against Lonesome/public", "index.html"));
+  });
+} else {
+  port = 3000;
+}
 
 
 (async () => {
@@ -227,3 +237,4 @@ async function getRequest(socket) {
 
 
 })();
+
