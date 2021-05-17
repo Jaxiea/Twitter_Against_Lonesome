@@ -193,9 +193,9 @@ async function getRequest(socket) {
 console.log("NODE_ENV is", process.env.NODE_ENV);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../Twitter Against Lonesome/public")));    
+  app.use(express.static(path.join(__dirname, "../Twitter_Against_Lonesome/public")));    
   app.get("*", (request, res) => {
-    res.sendFile(path.join(__dirname, "../Twitter Against Lonesome/public", "index.html"));
+    res.sendFile(path.join(__dirname, "../Twitter_Against_Lonesome/public", "index.html"));
   });
 } else {
   port = 3000;
