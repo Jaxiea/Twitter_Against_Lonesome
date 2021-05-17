@@ -204,6 +204,7 @@ if (process.env.NODE_ENV === "production") {
 
 (async () => {
 
+    /*
     try {
         // Make request
         const response = await getRequest(io);
@@ -213,6 +214,7 @@ if (process.env.NODE_ENV === "production") {
         console.log(e);
         process.exit(-1);
     }
+    */
 
     let currentRules;
 
