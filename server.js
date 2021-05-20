@@ -4,13 +4,12 @@
 const needle = require('needle');
 const express = require("express");
 const path = require('path');
-const http = require("http");
 const socketIo = require("socket.io");
 
 const app = express();
-
+const http = require("http");
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server).listen(server);
 
 const hostname = 'localhost';
 const port = 3000;
