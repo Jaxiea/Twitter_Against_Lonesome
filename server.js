@@ -2,17 +2,16 @@
 // https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/quick-start
 
 const needle = require('needle');
-const express = require("express");
 const path = require('path');
-const socketIo = require("socket.io");
 
-const app = express();
-const http = require("http");
-const server = http.createServer(app);
-const io = socketIo(server).listen(server);
+//https://stackoverflow.com/questions/27393705/how-to-resolve-a-socket-io-404-not-found-error
+var express = require('express'),
+    http = require('http');
+var app = express();
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
 
-const hostname = 'localhost';
-const port = 3000;
+server.listen(3000);
 
 var historyTweets = [];
 
@@ -20,7 +19,7 @@ var historyTweets = [];
 // To set environment variables on macOS or Linux, run the export command below from the terminal:
 // export BEARER_TOKEN='YOUR-TOKEN'
 const token = process.env.TWITTER_BEARER_TOKEN;
-const base = process.env.PWD;
+const base = process.env.PWD
 
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules';
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream';
@@ -48,11 +47,6 @@ app.get('/', (req, res) => {
 
 //Failed to load resource: the server responded with a status of 404 (Not Found)
 
-
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-    console.log(base);
-  });
 
 io.on('connection', (socket) => {
   console.log('a user connected');  
