@@ -12,12 +12,16 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+const hostname = 'localhost';
+const port = 3000;
+
 var historyTweets = [];
 
 // The code below sets the bearer token from your environment variables
 // To set environment variables on macOS or Linux, run the export command below from the terminal:
 // export BEARER_TOKEN='YOUR-TOKEN'
 const token = process.env.TWITTER_BEARER_TOKEN;
+const base = process.env.PWD;
 
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules';
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream';
@@ -35,15 +39,20 @@ const rules = [{
     },
 ];
 
-//app.use(express.static('public'));
+app.use(express.static('public'));
+
 /*
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');    //waht exactly is sendfile?
+  res.sendFile(path.join(__dirname + '/public/index.html'));    //waht exactly is sendfile?
 });
 */
 
-server.listen(3000, () => {
-    console.log('listening on *:3000');
+//Failed to load resource: the server responded with a status of 404 (Not Found)
+
+
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+    console.log(base);
   });
 
 io.on('connection', (socket) => {
@@ -137,6 +146,7 @@ function streamConnect(retryAttempt, socket) {
             retryAttempt = 0;
         } catch (e) {
             if (data.detail === "This stream is currently at the maximum allowed connection limit.") {
+                socket.emit('errormax', data.detail);
                 console.log(data.detail)
                 process.exit(1)
             } else {
@@ -190,8 +200,8 @@ async function getRequest(socket) {
     }
 }
 
-console.log("NODE_ENV is", process.env.NODE_ENV);
-
+//console.log("NODE_ENV is", process.env.NODE_ENV);
+/*
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../Twitter_Against_Lonesome/public")));    
   app.get("*", (request, res) => {
@@ -200,6 +210,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   port = 3000;
 }
+*/
 
 
 (async () => {
