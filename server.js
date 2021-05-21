@@ -3,15 +3,37 @@
 
 const needle = require('needle');
 const path = require('path');
-
+const fs = require('fs');
 //https://stackoverflow.com/questions/27393705/how-to-resolve-a-socket-io-404-not-found-error
 var express = require('express'),
     http = require('http');
-var app = express();
-var server = http.createServer(app);
-var io = require('socket.io').listen(server);
+const https = require('https');     //added for certificate error
 
+var app = express();
+var socket = require('socket.io');
+
+const server = https.createServer({
+    key: fs.readFileSync('./test_key.key'),
+    cert: fs.readFileSync('./test_cert.crt'),
+    ca: fs.readFileSync('./test_ca.crt'),
+    requestCert: false,
+    rejectUnauthorized: false
+}, app);
 server.listen(3000);
+
+const io = require('socket.io')(server);
+io.on("connection", (socket) => {
+    console.log("a user connected");
+});
+
+
+//var server = app.listen(3000, function(){
+ //   console.log('listening for requests on port 3000,');
+// });
+//let io = socket(server)
+//io.on('connection', function(socket){
+//  console.log(`${socket.id} is connected`);
+//});
 
 var historyTweets = [];
 
@@ -47,10 +69,6 @@ app.get('/', (req, res) => {
 
 //Failed to load resource: the server responded with a status of 404 (Not Found)
 
-
-io.on('connection', (socket) => {
-  console.log('a user connected');  
-});
 
 
 
