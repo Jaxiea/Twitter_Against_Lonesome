@@ -27,7 +27,20 @@ const secureServer = https.createServer({
 
 
 //const io = require('socket.io')(server);
-const ios = require('socket.io')(secureServer);
+//const ios = require('socket.io')(secureServer);
+const ios = require('socket.io')(secureServer, {
+    cors: {
+      origin: '*',
+    }
+  });
+
+/*
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
+});
+*/
 
 app.use(express.static('public'));
 
