@@ -17,9 +17,9 @@ var socket = require('socket.io');
 
 
 const secureServer = https.createServer({
-    key: fs.readFileSync('./test_key.key'),
-    cert: fs.readFileSync('./test_cert.crt'),
-    ca: fs.readFileSync('./test_ca.crt'),
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.cert'),
+   // ca: fs.readFileSync('./server.ca'),
     requestCert: false,
     rejectUnauthorized: false
 }, app);
@@ -47,9 +47,6 @@ ios.on("connection", (socket) => {
 
 
 
-
-
-
 /*
 server.listen(HTTP_PORT, () => {
     console.log('server started at 3000');
@@ -58,7 +55,7 @@ server.listen(HTTP_PORT, () => {
 
 
 secureServer.listen(HTTPS_PORT, () => {
-    console.log("secure server started at 443");
+    console.log("secure server started at 3000");
 })
 
 
