@@ -4,36 +4,63 @@
 const needle = require('needle');
 const path = require('path');
 const fs = require('fs');
-//https://stackoverflow.com/questions/27393705/how-to-resolve-a-socket-io-404-not-found-error
-var express = require('express'),
-    http = require('http');
+const express = require('express');
+const http = require('http');
 const https = require('https');     //added for certificate error
+
+//https://stackoverflow.com/questions/27393705/how-to-resolve-a-socket-io-404-not-found-error
 
 var app = express();
 var socket = require('socket.io');
 
-const server = https.createServer({
+//const server = http.createServer(app);
+
+
+const secureServer = https.createServer({
     key: fs.readFileSync('./test_key.key'),
     cert: fs.readFileSync('./test_cert.crt'),
     ca: fs.readFileSync('./test_ca.crt'),
     requestCert: false,
     rejectUnauthorized: false
 }, app);
-server.listen(3000);
 
-const io = require('socket.io')(server);
+
+
+//const io = require('socket.io')(server);
+const ios = require('socket.io')(secureServer);
+
+app.use(express.static('public'));
+
+const HTTP_PORT = 3000;
+const HTTPS_PORT = 443;
+
+/*
 io.on("connection", (socket) => {
-    console.log("a user connected");
+  //  new Socket(socket);
+})
+*/
+
+
+ios.on("connection", (socket) => {
+    new Socket(socket)
 });
 
 
-//var server = app.listen(3000, function(){
- //   console.log('listening for requests on port 3000,');
-// });
-//let io = socket(server)
-//io.on('connection', function(socket){
-//  console.log(`${socket.id} is connected`);
-//});
+
+
+
+
+/*
+server.listen(HTTP_PORT, () => {
+    console.log('server started at 3000');
+});
+*/
+
+
+secureServer.listen(HTTPS_PORT, () => {
+    console.log("secure server started at 443");
+})
+
 
 var historyTweets = [];
 
@@ -41,7 +68,7 @@ var historyTweets = [];
 // To set environment variables on macOS or Linux, run the export command below from the terminal:
 // export BEARER_TOKEN='YOUR-TOKEN'
 const token = process.env.TWITTER_BEARER_TOKEN;
-const base = process.env.PWD
+const base = process.env.PWD;
 
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules';
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream';
@@ -58,19 +85,6 @@ const rules = [{
         'tag': '我的'
     },
 ];
-
-app.use(express.static('public'));
-
-/*
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/public/index.html'));    //waht exactly is sendfile?
-});
-*/
-
-//Failed to load resource: the server responded with a status of 404 (Not Found)
-
-
-
 
 async function getAllRules() {
 
@@ -257,7 +271,7 @@ if (process.env.NODE_ENV === "production") {
     }
 
     // Listen to the stream.
-    streamConnect(0, io);
+    streamConnect(0, ios);
 
 
 })();
