@@ -7,18 +7,21 @@ const fs = require('fs');
 const express = require('express');
 const http = require('http');
 const https = require('https');     //added for certificate error
+const cors = require('cors')
 
 //https://stackoverflow.com/questions/27393705/how-to-resolve-a-socket-io-404-not-found-error
 
 var app = express();
+app.use(cors())
+
 var socket = require('socket.io');
 
 //const server = http.createServer(app);
 
 
 const secureServer = https.createServer({
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./server.cert'),
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
    // ca: fs.readFileSync('./server.ca'),
     requestCert: false,
     rejectUnauthorized: false
@@ -28,11 +31,7 @@ const secureServer = https.createServer({
 
 //const io = require('socket.io')(server);
 //const ios = require('socket.io')(secureServer);
-const ios = require('socket.io')(secureServer, {
-    cors: {
-      origin: '*',
-    }
-  });
+const ios = require('socket.io')(secureServer, { origins: '*:*'});
 
 /*
 const io = require('socket.io')(server, {
@@ -41,6 +40,23 @@ const io = require('socket.io')(server, {
   }
 });
 */
+
+/*
+const io = require("socket.io")(server, {
+    handlePreflightRequest: (req, res) => {
+        const headers = {
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Origin": req.headers.origin, //or the specific origin you want to give access to,
+            "Access-Control-Allow-Credentials": true
+        };
+        res.writeHead(200, headers);
+        res.end();
+    }
+});
+*/
+
+
+
 
 app.use(express.static('public'));
 
@@ -55,7 +71,7 @@ io.on("connection", (socket) => {
 
 
 ios.on("connection", (socket) => {
-    new Socket(socket)
+   // new Socket(socket)
 });
 
 
