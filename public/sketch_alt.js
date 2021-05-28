@@ -1,5 +1,5 @@
 var socket = io.connect("https://localhost:443");  //'https://64.227.75.126:8080
-var tweets = "關於為什麼我們看起來感情很好，但是絕對不會成為情侶或者有男女之間的感情，我覺得和相識的時間、相處模式有關，而且比起戀愛對象，他更傾向於家人吧，是個像哥哥的弟弟。\n\n因為他永遠都在讓步，即使兩個人情緒都不好，他還是會選擇放下自己情緒來哄我開心；意見不合時以我的意願為主。";
+var tweets = "No one's out here yet...";
 var historyTweets = [];
 var txtPositionY = 0;     //(windowHeight - fontSize)
 var fontSize = 32;
