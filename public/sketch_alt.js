@@ -1,5 +1,5 @@
 var socket = io.connect("https://localhost:443");  //'https://64.227.75.126:8080
-var tweets = "no one's around yet...";
+var tweets = "關於為什麼我們看起來感情很好，但是絕對不會成為情侶或者有男女之間的感情，我覺得和相識的時間、相處模式有關，而且比起戀愛對象，他更傾向於家人吧，是個像哥哥的弟弟。\n\n因為他永遠都在讓步，即使兩個人情緒都不好，他還是會選擇放下自己情緒來哄我開心；意見不合時以我的意願為主。";
 var historyTweets = [];
 var txtPositionY = 0;     //(windowHeight - fontSize)
 var fontSize = 32;
@@ -11,6 +11,7 @@ var errorToggle = false;
 var lgth = 0;     //longest length
 var modified_tweet;
 var process_toggle = false;
+var long_cleanup_toggle = false;
 
 var no = 0;
 
@@ -39,11 +40,13 @@ function setup() {
   txtPositionY = windowHeight/3;
   historyTweetsToggle == false;
   frameRate(5);
+  blendMode(SCREEN);
 }
 
 
 
 function draw(){
+    clear();
     background(0);
     fill(113, random(115, 255), 249);
     textSize(32);
@@ -53,6 +56,7 @@ function draw(){
         textSize(fontSize);
         text(errorMessage, width/2 - textWidth(errorMessage)/2 + random(-1, 1), height/2);
         if (random(2)){
+            clear();
             background(0);
         }
     }
@@ -84,21 +88,35 @@ function draw(){
         var tweet_array = tweets.split("\n");
 
         //get rid of extra \n
-        for (var i = 0; i < tweet_array.length; i++){
-            if(tweet_array[i] == "\n"){
-                delete tweet_array[i];
-            }
-        }
+        //...
 
         for (var i = 0; i < tweet_array.length; i++){
             if (textWidth(tweet_array[i]) > width){
-                console.log("a segment is longer than the width");
+                long_cleanup_toggle = true;
+                var tmp_array = tweet_array;
+               // console.log("a segment is longer than width, at position:", i);
                 var tmp = tweet_array[i];
+               // console.log("the segment is", tmp);
+                tmp_array.splice(i, 1);
+                //tmp_array.shift();
+               // console.log("the array changed to:", tmp_array);
                 tmp = line_breakdown(tmp);
-                console.log("modified segment: ", tmp);
-                tweet_array[i] = tmp;
+               // console.log("the segment changed to", tmp);
+                tmp = tmp.split("\n");
+                tmp.pop();
+                console.log("the segment changed again to", tmp);
+               // console.log("value i is: ", i);
+                tmp_array.splice(i, 0, ...tmp);
+                console.log(tmp_array);
+
+                tweet_array = tmp_array;
             }
         }
+
+        modified_tweet = tweet_array.join("\n");
+
+        
+        console.log("The transformed array is:", tweet_array);
 
         //get the width of the longest part
  
@@ -116,15 +134,17 @@ function draw(){
 
         console.log("longest final length is: ", lgth, width, (width - lgth)/2);  
         
-        modified_tweet = tweets;
+        if (long_cleanup_toggle == false){
+            modified_tweet = tweets;
+        }
         process_toggle = true;
     }
 
     textSize(fontSize);
     text(modified_tweet, (width - lgth)/2, txtPositionY);
-    fill(random(115, 255), 56, 227, 150);
+    fill(random(115, 255), 0, 227, 150);
     text(modified_tweet, (width - lgth)/2 + random(-3, 3), txtPositionY + random(-1, 1));
-    fill(113, random(115, 255), 249);
+    fill(0, random(115, 255), 0);
   
 }
 
